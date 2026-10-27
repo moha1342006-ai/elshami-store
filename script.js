@@ -70,4 +70,35 @@ document.addEventListener("DOMContentLoaded", () => {
     updateButton();
     backToTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
   }
+  const productsContainer = document.getElementById("products-container");
+
+if (productsContainer) {
+    fetch(apiURL)
+        .then(response => response.json())
+        .then(data => {
+            productsContainer.innerHTML = ""; // تفريغ الحاوية قبل الإضافة
+            
+            if (data && data.length > 0) {
+                data.forEach(product => {
+                    // بناء شكل بطاقة المنتج
+                    const productCard = document.createElement("div");
+                    productCard.className = "feature-card product-card"; // يمكنك تخصيص التصميم في ملف style.css
+                    
+                    productCard.innerHTML = `
+                        <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px;">
+                        <h3 style="margin-top: 10px;">${product.name}</h3>
+                        <p style="color: #27ae60; font-weight: bold;">${product.price} ج.م</p>
+                    `;
+                    
+                    productsContainer.appendChild(productCard);
+                });
+            } else {
+                productsContainer.innerHTML = "<p>لا توجد منتجات حالياً.</p>";
+            }
+        })
+        .catch(error => {
+            console.error("خطأ في جلب بيانات المنتجات:", error);
+            // في حال لم تقم بربط الـ API بعد، يمكنك ترك رسالة أو تركها فارغة
+        });
+}
 });
